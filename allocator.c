@@ -40,7 +40,13 @@ void *allocator_alloc_unchecked(Allocator allocator, unsigned long amount) {
 }
 
 void *allocator_resize(Allocator allocator, unsigned long amount, void *memory) {
-    return allocator.callbacks->resize(allocator.self, amount, memory);
+	void *result = allocator.callbacks->resize(allocator.self, amount, memory);
+	assert(result && "Allocator returned no data");
+	return result;
+}
+
+void *allocator_resize_unchecked(Allocator allocator, unsigned long amount, void *memory) {
+	return allocator.callbacks->resize(allocator.self, amount, memory);
 }
 
 void allocator_free(Allocator allocator, void *memory) {
