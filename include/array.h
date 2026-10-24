@@ -1,7 +1,7 @@
 #ifndef ARRAY_H
 #define ARRAY_H
 
-#include "allocator.h" // IWYU pragma: keep
+#include "allocator.h"
 #include <stdbool.h>
 
 typedef struct {
