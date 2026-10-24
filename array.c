@@ -1,13 +1,11 @@
 #include "array.h"
 #include <assert.h>
 
-bool array_allocate(int capacity, int size, Allocator allocator, Array *array) {
+void array_allocate(Array *array, int capacity, int size, Allocator allocator) {
     void *data = allocator_alloc(allocator, capacity * size);
     array->data = data;
     array->capacity = capacity;
     array->size = size;
-    // For compatibility reasons
-    return true;
 }
 
 void array_free(Array *array, Allocator allocator) {

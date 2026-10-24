@@ -3,40 +3,41 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-size_t align_forward(size_t ptr, size_t align) {
-    size_t mod = ptr % align;
-    if (mod != 0)
-        ptr += (align - mod);
-    return ptr;
+size_t mem_align_backward(size_t ptr, size_t alignment) {
+	return ptr - (ptr % alignment);
+}
+
+size_t mem_align_forward(size_t ptr, size_t alignment) {
+	return mem_align_backward(ptr + alignment - 1, alignment);
 }
 
 void *std_alloc(void *_self, unsigned long amount) { return malloc(amount); }
 
 void *std_resize(void *_self, unsigned long amount, void *memory) {
-    return realloc(memory, amount);
+	return realloc(memory, amount);
 }
 
 void std_free(void *_self, void *memory) { free(memory); }
 
 AllocatorCallbacks std_allocator_callbacks = {
-    .alloc = std_alloc,
-    .resize = std_resize,
-    .free = std_free,
+	.alloc = std_alloc,
+	.resize = std_resize,
+	.free = std_free,
 };
 
 Allocator std_allocator = {
-    .callbacks = &std_allocator_callbacks,
-    .self = 0,
+	.callbacks = &std_allocator_callbacks,
+	.self = 0,
 };
 
 void *allocator_alloc(Allocator allocator, unsigned long amount) {
-    void *result = allocator.callbacks->alloc(allocator.self, amount);
-    assert(result && "Allocator returned no data");
+	void *result = allocator.callbacks->alloc(allocator.self, amount);
+	assert(result && "Allocator returned no data");
 	return result;
 }
 
 void *allocator_alloc_unchecked(Allocator allocator, unsigned long amount) {
-    return allocator.callbacks->alloc(allocator.self, amount);
+	return allocator.callbacks->alloc(allocator.self, amount);
 }
 
 void *allocator_resize(Allocator allocator, unsigned long amount, void *memory) {
@@ -50,5 +51,5 @@ void *allocator_resize_unchecked(Allocator allocator, unsigned long amount, void
 }
 
 void allocator_free(Allocator allocator, void *memory) {
-    allocator.callbacks->free(allocator.self, memory);
+	allocator.callbacks->free(allocator.self, memory);
 }
